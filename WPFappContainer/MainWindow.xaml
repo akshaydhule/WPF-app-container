@@ -1,0 +1,150 @@
+﻿<Window x:Class="DemoUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DemoUI"
+        mc:Ignorable="d"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        WindowStartupLocation="CenterScreen"
+        MinWidth="{Binding WindowMinimumWidth}"
+        MinHeight="{Binding WindowMinimumHeight}"
+        Title="Demo Application" Height="720" Width="1280"
+        Icon="Images/Logo/github.png">
+
+
+    <Window.Resources>
+        <Style TargetType="{x:Type local:MainWindow}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Window}">
+                        <!-- outer border dropshadow margin -->
+                        <Border Padding="{Binding OuterMarginsizeThickness, FallbackValue=10}">
+
+                            <!-- Main window outline -->
+                            <Grid>
+
+                                <!-- Opacity mask for corners on grid -->
+                                <Border x:Name="Container" Background="{StaticResource ForegroundLightBrush}"
+                                        CornerRadius="{Binding WindowCornerRadius, FallbackValue=10}"/>
+
+                                <!-- Window border and drop shadow -->
+                                <Border CornerRadius="{Binding WindowCornerRadius, FallbackValue=10}" 
+                                        Background="{Binding ForegroundLightBrush, FallbackValue=White}">
+                                    <Border.Effect>
+                                        <DropShadowEffect ShadowDepth="0" Opacity="0.2"/>
+                                    </Border.Effect>
+                                </Border>
+
+                                <!-- Main window -->
+                                <Grid>
+
+                                    <!-- Corner Clipping -->
+                                    <Grid.OpacityMask>
+                                        <VisualBrush Visual="{Binding ElementName=Container}" />
+                                    </Grid.OpacityMask>
+
+                                    <Grid.RowDefinitions>
+                                        <!-- Title bar -->
+                                        <RowDefinition Height="30"/>
+                                        <!-- Drop shadow -->
+                                        <RowDefinition Height="6"/>
+                                        <!-- Middle bar -->
+                                        <RowDefinition Height="100"/>
+                                        <!-- Remaining Panel -->
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+
+                                    <!-- Title Bar -->
+                                    <Grid Grid.Row="0" Panel.ZIndex ="1" Background="{StaticResource BackgroundGreyBrush}">
+
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- Icon -->
+                                        <Viewbox VerticalAlignment="Center" Grid.Column="0">
+                                            <Image x:Name="github" HorizontalAlignment="Left" 
+                                                   d:LayoutOverrides="TopPosition, BottomPosition" 
+                                                   Height="20" Margin="5,0,0,0" Source="Images/Logo/github1.png" 
+                                                   Stretch="Fill" VerticalAlignment="Top" Width="20"/>
+                                        </Viewbox>
+
+                                        <!-- App Title Text Block-->
+                                        <Viewbox Grid.Column="1" Margin="0">
+                                            <TextBlock x:Name="textBlock3" Style="{StaticResource HeaderText}" 
+                                                       Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Title}"/>
+                                        </Viewbox>
+
+                                        <!-- Window Buttons -->
+                                        <StackPanel Grid.Column="2" Orientation="Horizontal">
+                                            <Button Command="{Binding MinimizeCommand}" Style="{StaticResource WindowControlButton}" Content="_"/>
+                                            <Button Command="{Binding MaximizeCommand}" Style="{StaticResource WindowControlButton}" Content="[ ]"/>
+                                            <Button Command="{Binding CloseCommand}" Style="{StaticResource WindowCloseButton}" Content="X" />
+                                        </StackPanel>
+
+                                    </Grid>
+
+                                    <!-- Drop shadow -->
+                                    <Border Grid.Row="1" Height="6" BorderThickness="0 0.2 0 0">
+                                        <!-- Underline -->
+                                        <Border.BorderBrush>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                                <GradientStop Color="{StaticResource BackgroundGrey}" Offset="0.0"/>
+                                                <GradientStop Color="{StaticResource BackgroundGrey}" Offset="1.0"/>
+                                            </LinearGradientBrush>
+                                        </Border.BorderBrush>
+
+                                        <!-- Drop Shadow -->
+                                        <Border.Background>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                <GradientStop Color="{StaticResource BackgroundLightGrey}" Offset="0.0"/>
+                                                <GradientStop Color="{StaticResource BackgroundLightGrey}" Offset="1.0"/>
+                                            </LinearGradientBrush>
+                                        </Border.Background>
+
+                                    </Border>
+
+                                    <!-- Middle Bar -->
+                                    <Grid Grid.Row="2" Background="{StaticResource BackgroundLightGreyBrush}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition Width="35*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Image x:Name="github1" Margin="30,15,0,20" 
+                                               Source="Images/Logo/github.png" 
+                                               Stretch="Fill" 
+                                               HorizontalAlignment="Left" Width="255" Grid.ColumnSpan="2"/>
+                                        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal"
+                                                      Margin="0,20,20,20" Grid.Column="1">
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <!-- Task bar panel content -->
+                                    <Border Grid.Row="3" Padding="{Binding InnerContentPadding}">
+                                        <ContentPresenter Content="{TemplateBinding Content}"/>
+                                    </Border>
+                                </Grid>
+
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome
+            ResizeBorderThickness="{Binding ResizeBorderThickness}"
+            />
+    </WindowChrome.WindowChrome>
+
+    <Grid>
+        <Frame x:Name="Main" Content ="{Binding CurrentPage, Converter={local:ApplicationPageValueConverter}}" Margin="0,0,0,0"></Frame>
+    </Grid>
+</Window>

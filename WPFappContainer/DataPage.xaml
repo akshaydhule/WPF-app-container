@@ -1,0 +1,125 @@
+﻿<Page x:Class="DemoUI.DataPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:DemoUI"
+      mc:Ignorable="d" 
+      d:DesignHeight="535" d:DesignWidth="1270"
+      Title="DatasendPage">
+
+    <Grid Background="{StaticResource BackgroundLightGreyBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="267*"/>
+            <ColumnDefinition Width="1004*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.Resources>
+            <BooleanToVisibilityConverter x:Key="B2VConverter" />
+        </Grid.Resources>
+        <!-- First row of Panel -->
+        <Grid Grid.Row="0" Margin="10,10,10.4,9.6" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <!--  -->
+            <Border Margin="10 10" Grid.Column="1" Background="{StaticResource ForegroundLightBrush}"
+                        CornerRadius="5">
+                <StackPanel Name="Periodicpanel" HorizontalAlignment="Stretch" Orientation="Vertical">
+                    <!-- Title -->
+                    <TextBlock Text="Title" Style="{StaticResource MenuHeaderText}" HorizontalAlignment="Center"/>
+                    <!-- options -->
+                    <Border CornerRadius="5" BorderThickness="2" Padding="10 10"
+                                Background="{StaticResource BackgroundGreyBrush}" HorizontalAlignment="Stretch">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <RadioButton x:Name="FirstBlock" GroupName="Type"
+                                         FontFamily="{StaticResource LatoRegular}" 
+                                         Foreground="{StaticResource BackgroundVeryLightBrush}"
+                                         FontSize="{StaticResource FontSizeMedium}" VerticalAlignment="Center"
+                                         Content="First" Margin="0 0 10 0"
+                                         IsChecked="{Binding Path=TypeRadioOption, Mode=TwoWay,
+                                                             Converter={local:TypeRadioButtonConverter}, 
+                                                             ConverterParameter={x:Static local:TypeRadioOptions.First}}"/>
+                            <RadioButton x:Name="SecondBlock" GroupName="Type"
+                                         FontFamily="{StaticResource LatoRegular}"
+                                         FontSize="{StaticResource FontSizeMedium}" VerticalAlignment="Center"
+                                         Foreground="{StaticResource BackgroundVeryLightBrush}"
+                                         Content="Second" 
+                                         IsChecked="{Binding Path=TypeRadioOption, Mode=TwoWay,
+                                                             Converter={local:TypeRadioButtonConverter}, 
+                                                             ConverterParameter={x:Static local:TypeRadioOptions.Second}}"/>
+                        </StackPanel>
+                    </Border>
+                    <!-- Radio options -->
+                    <StackPanel  Margin="5" Background="Transparent">
+                        <!-- Min -->
+                        <Border Padding="10 10">
+                            <RadioButton x:Name="radioButton4" GroupName="DataType" FontFamily="{StaticResource LatoRegular}"
+                                                 FontSize="{StaticResource FontSizeMedium}" VerticalAlignment="Center"
+                                                 Content="First Settings" HorizontalAlignment="Stretch" 
+                                                 IsChecked="{Binding Path=RadioOption, Mode=TwoWay,
+                                                                     Converter={local:DataRadioButtonConverter}, 
+                                                                     ConverterParameter={x:Static local:RadioOptions.FirstRadioButton}}"/>
+                        </Border>
+                        <!-- Custom -->
+                        <Border Padding="10 10">
+                            <RadioButton x:Name="radioButton5" GroupName="DataType" FontFamily="{StaticResource LatoRegular}"
+                                                 FontSize="{StaticResource FontSizeMedium}" VerticalAlignment="Center"
+                                                 Content="Second Settings" HorizontalAlignment="Stretch"
+                                                 Visibility="{Binding Path=AccountType, Mode=TwoWay,
+                                                                     Converter={StaticResource B2VConverter}}"
+                                                 IsChecked="{Binding Path=RadioOption, Mode=TwoWay,
+                                                                     Converter={local:DataRadioButtonConverter}, 
+                                                                     ConverterParameter={x:Static local:RadioOptions.SecondRadioButton}}"/>
+                        </Border>
+                        <!-- Max -->
+                        <Border Padding="10 10">
+                            <RadioButton x:Name="radioButton6" GroupName="DataType" FontFamily="{StaticResource LatoRegular}"
+                                                 FontSize="{StaticResource FontSizeMedium}" VerticalAlignment="Center"
+                                                 Content="Third Settings" HorizontalAlignment="Stretch"
+                                                 IsChecked="{Binding Path=RadioOption, Mode=TwoWay,
+                                                                    Converter={local:DataRadioButtonConverter}, 
+                                                                    ConverterParameter={x:Static local:RadioOptions.ThirdRadioButton}}"/>
+                        </Border>
+                    </StackPanel>
+                    <!-- Data send Button -->
+                    <Button x:Name="Second_button" Content="Click" HorizontalAlignment="Center" Width="80"
+                           Style="{StaticResource RegularButton}" Command="{Binding DataCommand}" Click="Send_button_Click" 
+                            CommandParameter="{Binding ElementName=settingspage}"/>
+
+                </StackPanel>
+
+            </Border>
+        </Grid>
+
+        <!-- Second half panel for Data presentation -->
+        <Border Grid.Row="1" Margin="20,0,20,10" CornerRadius="5" Background="{StaticResource ForegroundLightBrush}" Grid.ColumnSpan="2">
+            <Grid>
+                <Border Padding="20 20">
+                    <StackPanel Margin="0,-2,0.4,2">
+                        <!-- Title -->
+                        <DockPanel LastChildFill="True">
+                            <TextBlock Text="Data Entry" Style="{StaticResource MenuHeaderText}" />
+                            <Button Content="Refresh" Click="Refresh_Button_Click" HorizontalAlignment="Right"/>
+                        </DockPanel>
+                        <DataGrid x:Name="DataEntriesGrid" MinHeight="100" ColumnWidth="*" AutoGenerateColumns="False"
+                                  VerticalAlignment="Stretch" FontFamily="{StaticResource LatoRegular}"
+                                  ItemsSource="{Binding DataEntries,  UpdateSourceTrigger=PropertyChanged, 
+                                                        NotifyOnSourceUpdated=True}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Column 1" Binding="{Binding Path=Field1}"/>
+                                <DataGridTextColumn Header="Column 2" Binding="{Binding Path=Field2}" />
+                                <DataGridTextColumn Header="Column 3" Binding="{Binding Path=Field3}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</Page>
